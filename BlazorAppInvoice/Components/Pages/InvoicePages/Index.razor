@@ -1,0 +1,40 @@
+﻿@page "/invoices"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@inject BlazorAppInvoice.Data.BlazorAppInvoiceContext DB
+@using BlazorAppInvoice
+@rendermode InteractiveServer
+@using Syncfusion.Blazor
+@using Syncfusion.Blazor.Buttons
+
+<PageTitle>Invoices</PageTitle>
+
+<h1>Invoices</h1>
+
+<p>
+    <a href="invoices/create"class="btn btn-primary">New Invoice</a>
+</p>
+ 
+<QuickGrid Class="table" Items="DB.Invoice" Pagination="state">
+    <PropertyColumn Property="invoice => invoice.Number"/>
+    <PropertyColumn Property="invoice => invoice.CustomerName" Title="Customer Name" Sortable="true" />
+    <PropertyColumn Property="invoice => invoice.InvoiceDate" Title="Invoice Date" />
+    <PropertyColumn Property="invoice => invoice.Invoice_Due_Date" Title=" Invoice Due Date" />
+    <PropertyColumn Property="invoice => invoice.CurrencyCode" Title="Currency Code"/>
+    <PropertyColumn Property="invoice => invoice.Amount" />
+    <PropertyColumn Property="invoice => invoice.Description" />
+    <PropertyColumn Property="invoice => invoice.IsPaid" />
+
+    <TemplateColumn Context="invoice">
+        <a href="@($"invoices/edit?id={invoice.Id}")">Edit</a> |
+        <a href="@($"invoices/details?id={invoice.Id}")">Details</a> |
+        <a href="@($"invoices/delete?id={invoice.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+<Paginator State="state" />
+
+@code {
+    PaginationState state = new PaginationState { ItemsPerPage = 10 };
+   
+}
+

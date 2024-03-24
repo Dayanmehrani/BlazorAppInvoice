@@ -1,0 +1,59 @@
+﻿@page "/invoices/details"
+@inject BlazorAppInvoice.Data.BlazorAppInvoiceContext DB
+@using BlazorAppInvoice
+@inject NavigationManager NavigationManager
+@using Microsoft.EntityFrameworkCore
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h4>Invoice</h4>
+    <hr />
+    @if (invoice is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">CustomerName</dt>
+            <dd class="col-sm-10">@invoice.CustomerName</dd>
+            <dt class="col-sm-2">Number</dt>
+            <dd class="col-sm-10">@invoice.Number</dd>
+            <dt class="col-sm-2">InvoiceDate</dt>
+            <dd class="col-sm-10">@invoice.InvoiceDate</dd>
+            <dt class="col-sm-2">Invoice_Due_Date</dt>
+            <dd class="col-sm-10">@invoice.Invoice_Due_Date</dd>
+            <dt class="col-sm-2">CurrencyCode</dt>
+            <dd class="col-sm-10">@invoice.CurrencyCode</dd>
+            <dt class="col-sm-2">Amount</dt>
+            <dd class="col-sm-10">@invoice.Amount</dd>
+            <dt class="col-sm-2">Description</dt>
+            <dd class="col-sm-10">@invoice.Description</dd>
+            <dt class="col-sm-2">Ispaid</dt>
+            <dd class="col-sm-10">@invoice.IsPaid</dd>
+        </dl>
+        <div>
+            <a href="@($"/invoices/edit?id={invoice.Id}")">Edit</a> |
+            <a href="@($"/invoices")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    Invoice? invoice;
+
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        invoice = await DB.Invoice.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (invoice is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}
